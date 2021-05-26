@@ -1,41 +1,24 @@
 const express = require("express");
 const path = require("path");
+const logger = require("morgan");
+const mongoose = require("mongoose");
 const PORT = process.env.PORT || 3001;
 const app = express();
 
 // Define middleware here
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(logger("dev"));
+app.use(express.static("public"));
+
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/weedworksdb", { useNewUrlParser: true });
+
 // Serve up static assets (usually on heroku)
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
-// Define API routes here
 
-app.get("api/sativa/strains", function (req, res) {
-  //database query to get all sativa strains
-  res.json([])
-});
-
-appp.get("api/indica/strains", function (req, res) {
-  //database query to get all indica strains
-  res.json([])
-});
-
-app.get("api/hybrid/strains", function (req, res) {
-  //database query to get all hybrid strains
-  res.json([])
-});
-
-app.get("api/strains/:id", function (req, res) {
-  //database query to get strain by id?
-  res.json([])
-});
-
-app.post("api/pages/profilepage", function (req, res) {
-  //database querry to update favorites list
-  res.json([])
-});
+app.use(require("./routes"));
 
 // Send every other request to the React app
 // Define any API routes before this runs
